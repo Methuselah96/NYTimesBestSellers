@@ -70,13 +70,14 @@ namespace NYTimesBestSellers
             }
 
             var stringBuilder = new StringBuilder();
-            foreach (var (key, value) in books)
+            stringBuilder.AppendLine("Title,Points,Count");
+            foreach (var (key, (points, count)) in books)
             {
                 var escapedKey = key.Contains(",") ? $"\"{key}\"" : key;
-                stringBuilder.AppendLine($"{escapedKey},{value}");
+                stringBuilder.AppendLine($"{escapedKey},{points},{count}");
             }
 
-            var filePath = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.Desktop), "nyt-non.csv");
+            var filePath = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.Desktop), "nyt.csv");
             await File.WriteAllTextAsync(filePath, stringBuilder.ToString());
         }
 
