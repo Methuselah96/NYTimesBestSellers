@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.IO;
 using System.Net.Http;
 using System.Text;
@@ -23,7 +24,7 @@ namespace NYTimesBestSellers
         {
             var loopDateTime = FirstDateTime;
             var dateTimes = new List<DateTime>();
-            while (loopDateTime <= new DateTime(2020, 11, 2))
+            while (loopDateTime <= new DateTime(2022, 6, 26))
             {
                 dateTimes.Add(loopDateTime);
 
@@ -85,16 +86,33 @@ namespace NYTimesBestSellers
         {
             var url =
                 $"https://www.nytimes.com/books/best-sellers/{dateTime.Year}/{dateTime.Month:D2}/{dateTime.Day:D2}/{category}/";
-            var response = await Client.GetAsync(url);
+
+            HttpResponseMessage response = null;
+
+            var stopwatch = Stopwatch.StartNew();
+            try
+            {
+                response = await Client.GetAsync(url);
+            }
+            catch (Exception)
+            {
+            }
 
             var j = 1;
-            while (!response.IsSuccessStatusCode)
+            while (response == null || !response.IsSuccessStatusCode)
             {
                 Thread.Sleep(j * 1000);
-                response = await Client.GetAsync(url);
+                try
+                {
+                    response = await Client.GetAsync(url);
+                }
+                catch (Exception)
+                {
+                }
+
                 j *= 2;
             }
-            Console.WriteLine(dateTime);
+            Console.WriteLine($"{dateTime}\t{j}\t{stopwatch.ElapsedMilliseconds}");
 
             var responseBody = await response.Content.ReadAsStringAsync();
 
