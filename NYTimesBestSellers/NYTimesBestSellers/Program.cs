@@ -24,7 +24,7 @@ namespace NYTimesBestSellers
         {
             var loopDateTime = FirstDateTime;
             var dateTimes = new List<DateTime>();
-            while (loopDateTime <= new DateTime(2022, 6, 26))
+            while (loopDateTime <= new DateTime(2023, 8, 20))
             {
                 dateTimes.Add(loopDateTime);
 
